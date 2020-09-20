@@ -41,15 +41,18 @@ margin-right: 40px;
 export const ButtonLink = styled(ReactRouterLink)`
 display: block;
 background-color: #e50914;
-width: 84px;
 height: fit-content;
 color:white;
 border: 0;
-font-size: 15px;
+font-size: 1rem;
+font-weight: 400;
+line-height: normal;
 border-radius: 3px;
-padding: 8px 17px;
+padding: 7px 17px;
 cursor: pointer;
 text-decoration: none;
+float: right;
+
 
 &:hover {
     background-color: #f40612;

@@ -24,7 +24,7 @@ export default function Home() {
                     </OptForm.Text>
                     <OptForm>
                         <OptForm.Input placeholder="Email address" />
-                        <OptForm.Button>TRY 30 DAYS FREE</OptForm.Button>
+                        <OptForm.Button to="/signup">TRY 30 DAYS FREE</OptForm.Button>
                         <OptForm.Break />
 
                     </OptForm>
