@@ -1,38 +1,45 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { SelectProfileContainer } from './profiles'
 import { FirebaseContext } from '../context/firebase'
-import { Loading, Header, Card } from '../components'
+import { Loading, Header, Card, Player } from '../components'
 import * as ROUTES from '../constants/routes'
 import logo from '../logo.svg'
 import { FooterContainer } from './footer'
+import Fuse from 'fuse.js'
+
 
 
 export function BrowseContainer({ slides }) {
-    const [category, setCategory] = useState('films')
-    const [searchTerm, setSearchTerm] = useState('')
-    const [profile, setProfile] = useState({})
-    const [loading, setLoading] = useState(true)
-    const [slideRows, setSlideRows] = useState([])
+    const [category, setCategory] = useState('series');
+    const [profile, setProfile] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [slideRows, setSlideRows] = useState([]);
 
-
-
-    const { firebase } = useContext(FirebaseContext)
-    const user = firebase.auth().currentUser || {}
-
-
+    const { firebase } = useContext(FirebaseContext);
+    const user = firebase.auth().currentUser || {};
 
     useEffect(() => {
-
         setTimeout(() => {
-            setLoading(false)
-        }, 3000)
-    }, [profile.displayName])
-
+            setLoading(false);
+        }, 3000);
+    }, [profile.displayName]);
 
     useEffect(() => {
-        setSlideRows(slides[category])
+        setSlideRows(slides[category]);
+    }, [slides, category]);
 
-    }, [slides, category])
+    useEffect(() => {
+        const fuse = new Fuse(slideRows, { keys: ['data.description', 'data.title', 'data.genre'] });
+        const results = fuse.search(searchTerm).map(({ item }) => item);
+
+        if (slideRows.length > 0 && searchTerm.length > 3 && results.length > 0) {
+            setSlideRows(results);
+        } else {
+            setSlideRows(slides[category]);
+        }
+    }, [searchTerm]);
+
 
 
     return profile.displayName ? (
@@ -81,7 +88,10 @@ export function BrowseContainer({ slides }) {
                     <Header.Text>
                         Aragorn is revealed as the heir to the ancient kings as he, Gandalf and the other members of the broken fellowship struggle to save Gondor.
                 </Header.Text>
-                    <Header.PlayButton>Play</Header.PlayButton>
+                    <Player>
+                        <Player.Button />
+                        <Player.Video src="/videos/lotr.mp4" />
+                    </Player>
                 </Header.Feature>
             </Header>
 
@@ -101,7 +111,10 @@ export function BrowseContainer({ slides }) {
                             ))}
                         </Card.Entities>
                         <Card.Feature category={category} >
-                            <p>HELLO</p>
+                            <Player>
+                                <Player.Button />
+                                <Player.Video src="/videos/prestige.mp4" />
+                            </Player>
                         </Card.Feature>
                     </Card>
                 ))}
